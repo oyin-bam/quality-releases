@@ -6,7 +6,7 @@ stages:
   jobs:
   - job: Build
     pool:
-      name: "ubuntu-18.04"
+      name: 'ubuntu-18.04'
     steps:
     # Needed for Terraform VM deployment
     # - task: InstallSSHKey@0
@@ -37,7 +37,7 @@ stages:
           - task: AzureWebApp@1
             displayName: 'Deploy Azure Web App'
             inputs:
-              azureSubscription: '0b996307-7c6a-462a-990b-568412d43da3'
+              azureSubscription: 'Azure subscription 1'
               appName: 'bambamapp-AppService'
               appType: webApp
               package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip
