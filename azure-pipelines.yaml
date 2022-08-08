@@ -6,7 +6,7 @@ stages:
   jobs:
   - job: Build
     pool:
-      name: 'ubuntu-latest'
+      name: 'Azure Pipelines'
     steps:
     # Needed for Terraform VM deployment
     # - task: InstallSSHKey@0
