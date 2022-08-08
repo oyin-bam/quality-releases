@@ -72,7 +72,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://dummy.restapiexample.com/api/v1/employee/24",
+					"raw": "https://dummy.restapiexample.com/api/v1/employee/1468",
 					"host": [
 						"https://dummy.restapiexample.com"
 					],
@@ -80,7 +80,7 @@
 						"api",
 						"v1",
 						"employee",
-						"24"
+						"1468"
 					]
 				},
 				"description": "Get a single employee data"
