@@ -6,7 +6,7 @@ stages:
   jobs:
   - job: Build
     pool:
-      name: "Ubuntu-18.04"
+      name: "Default"
     steps:
     # Needed for Terraform VM deployment
     # - task: InstallSSHKey@0
