@@ -2,6 +2,50 @@ name: Azure Pipelines
 variables:
   python.version: '3.7.6'
 stages:
+- stage: SetupTerraform
+  displayName: Setup Terraform CI/CD
+  jobs:
+  - job: SetupTerraformJob
+    displayName: Setting up Terraform Job
+    steps:
+    
+      - task: InstallSSHKey@0
+        inputs:
+          knownHostsEntry: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC8E9Hih62kNz44omgCuU3uyveVkjHVWStILuOd9+5nb/WSsVpBTxYTv7n9S97IX4kFVDknQh+qlPS4tQQzr6eJjeOz9xpJfBblBhQFXIZJ0eqP90xexM8q/obZNNK+oTLH4lGHKDwNCRWxogpMhE6mjckOtMslU0LRN/kpTyoAFWz1451cuevahI7SD33qHXCLtwd/JA+jtFSs7Ufg5sCTNp7GTPH09pbjWwlY03DYzWrpgzYE25hq7VTQcehdTQJXeKpBy57sXLv/n3JxHxkA3SyEeWNOLrIb9uPRPBdeG8gtWJqz1o11Sm9XBoIvn9+kOeFhxnDuNPqTFXFJOAUEZtdk0R6SN7EckU8Pb5vBIxMKs7rAOxeFQaPeZQkxDyWx5XUL72IH6qNTsuqpZ6EIUlSbQ6LRNs8PnntyUQIh4sFdj6PYBixVDSstpSvw3LVXsf0iYAh606FRBiEgiO35zZfveKJTuJvlRP1GxAfvogb4pLpl6oGFpjqy2wjQf4WUFVKhI8yFMn0IeixYwLgw9aiOS3UDy/rKeuopTPhM7gpawKEMRMQR7l9qlmwkuFGUK1tCcuQbqxHpxa7nvfA3/Irasq36XrleNP54hh68Ab2GxOyZwmFG1vrEFDS28961jGq4Jdp/FCJFZ75Mh8y3YuAjj21s00cLcBvOn9UA2Q== user@OYINDAMOLA'
+          sshKeySecureFile: 'SOVDzO0zPgtGXkMKf3rkcQH46TY+HN956CZtp/5GLv4'
+      - task: CmdLine@2
+        inputs:
+          script: |
+            sudo apt-get install zip unzip
+                      export PATH=$PATH:/home/devopsagent/myagent/_work/_temp
+                      export PATH=$PATH:/usr/bin/unzip
+                      echo $PATH
+
+      - task: TerraformInstaller@0
+        inputs:
+          terraformVersion: 'latest'
+
+      - task: TerraformTaskV3@3
+        inputs:
+          provider: 'azurerm'
+          command: 'init'
+          backendServiceArm: 'Azure subscription 1(0b996307-7c6a-462a-990b-568412d43da3)'
+          backendAzureRmResourceGroupName: 'state-storage-rg'
+          backendAzureRmStorageAccountName: 'oyinterrastatestorage'
+          backendAzureRmContainerName: 'oyinterrastatecontainer'
+          backendAzureRmKey: 'terraform.oyinterrastatecontainer'
+
+      - task: TerraformTaskV3@3
+        inputs:
+          provider: 'azurerm'
+          command: 'plan'
+          environmentServiceNameAzureRM: 'Azure subscription 1(0b996307-7c6a-462a-990b-568412d43da3)'
+      - task: TerraformTaskV3@3
+        inputs:
+          provider: 'azurerm'
+          command: 'apply'
+          environmentServiceNameAzureRM: 'Azure subscription 1(0b996307-7c6a-462a-990b-568412d43da3)'
+    
 - stage: Build
   jobs:
   - job: Build
@@ -24,11 +68,86 @@ stages:
     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip
       displayName: 'Upload Package'
       artifact: drop-fakerestapi
+
+
+- stage: Build1
+  jobs:
+  - job: Build
+    pool:
+      vmImage: 'ubuntu-18.04'
+    steps:
+    - task: ArchiveFiles@2
+      displayName: 'Archive Selenium tests'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/selenium'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-selenium-tests.zip'
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-selenium-tests.zip
+      displayName: 'Upload Selenium Tests'
+      artifact: selenium
+
+- stage: Deployment     
+  jobs:
+  - deployment: UITests
+    displayName: 'UI Tests'
+    pool:
+      vmImage: 'ubuntu-18.04'
+    environment:  'TEST'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            displayName: Download selenium
+            artifact: selenium
+          - task: Bash@3
+            displayName: 'Install Selenium'
+            inputs:
+              targetType: 'inline'
+              script: |
+                #! /bin/bash
+                
+                sudo apt-get upgrade -y
+                sudo apt-get install python3-pip -y
+                sudo apt-get install unzip -y
+                sudo apt-get install -y chromium-browser
+                sudo apt-get install -y chromium-chromedriver
+                pip3 install selenium
+                export PATH=$PATH:/usr/lib/chromium-browser/
+                cd $(Pipeline.Workspace)/selenium
+                unzip -o $(Pipeline.Workspace)/selenium/$(Build.BuildId)-selenium-tests -d .
+          - task: Bash@3
+            displayName: 'Run Selenium Tests'
+            inputs:
+              targetType: 'inline'
+              script: |
+                ls $(Pipeline.Workspace)/selenium
+                ls $(Pipeline.Workspace)/
+                python3 $(Pipeline.Workspace)/selenium/login.py | tee -a $(Pipeline.Workspace)/selenium/seleniumtestrun.log
+                cat $(Pipeline.Workspace)/selenium/seleniumtestrun.log
+                sudo cp $(Pipeline.Workspace)/selenium/seleniumtestrun.log /var/log
+- stage: Build
+  jobs:
+  - job: Build
+    pool:
+      vmImage: 'ubuntu-18.04'
+    steps:
+    - task: ArchiveFiles@2
+      displayName: 'Archive FakeRestAPI'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/fakerestapi'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip
+      displayName: 'Upload Package'
+      artifact: drop-fakerestapi
 - stage:
   jobs:
   - deployment: FakeRestAPI
     pool:
-      vmImage: 'ubuntu-latest'
+      vmImage: 'ubuntu-18.04'
     environment: 'TEST'
     strategy:
       runOnce:
@@ -37,31 +156,104 @@ stages:
           - task: AzureWebApp@1
             displayName: 'Deploy Azure Web App'
             inputs:
-              azureSubscription: 'quality_release'
-              appName: 'bambamapp-AppService'
+              azureSubscription: 'connect'
+              appName: 'timsapp-AppService'
               appType: webApp
               package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip
-  # - deployment: VMDeploy
-  #   displayName: NAME
-  #   environment:
-  #     name:  ENVIRONMENT NAME
-  #     resourceType: VirtualMachine
-  #     tags: TAG NAME
-  #   strategy:
-  #     runOnce:
-  #       deploy:
-  #         steps:
-  #         - task: Bash@3
-  #           inputs:
-  #             targetType: 'inline'
-  #             script: |
-  #               #! /bin/bash
+
+- stage: Run_Tests
+  displayName: Run App Tests
+  jobs:
+  - job: JMeterTests
+    displayName: JMeter Tests
+    pool:
+      vmImage: 'ubuntu-18.04'
+    steps:
+      - task: Bash@3
+        displayName: Install JMeter
+        inputs:
+          targetType: 'inline'
+          script: |
+            sudo apt-get install openjdk-11-jre-headless -y
+            wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.4.1.tgz -O jmeter.tgz
+            tar -xzvf jmeter.tgz
+      - task: Bash@3
+        displayName: Run JMeter tests
+        inputs:
+          targetType: 'inline'
+          script: |
+            apache-jmeter-5.4.1/bin/jmeter -n -t automatedtesting/jmeter/stress-test.jmx \
+              -l automatedtesting/jmeter/stress-result.csv \
+              -e -f -o automatedtesting/jmeter/stress-test-report.html \
+              -j automatedtesting/jmeter/stress-test.log
+            apache-jmeter-5.4.1/bin/jmeter -n -t automatedtesting/jmeter/endurance-test.jmx \
+              -l automatedtesting/jmeter/endurance-result.csv \
+              -e -f -o automatedtesting/jmeter/endurance-test-report.html \
+              -j automatedtesting/jmeter/endurance-test.log
+    
+  - job: RunPostmanTests
+    pool:
+      vmImage: 'ubuntu-18.04'
+    steps:
+    - task: CmdLine@2
+      displayName: Install Newman
+      inputs:
+        script: 'npm install newman'
+        workingDirectory: '$(System.DefaultWorkingDirectory)'
+    - task: CmdLine@2
+      displayName: Run Regression Test Suite
+      continueOnError: true
+      inputs:
+        script: 'newman run automatedtesting/postman/Regression_postman_collection.json -e $(System.DefaultWorkingDirectory)/automatedtesting/postman/postman_environment.json --reporters cli,junit --reporter-junit-export TestResults/result-regression-test.xml'
+        workingDirectory: '$(System.DefaultWorkingDirectory)'
+    - task: CmdLine@2
+      displayName: Run Data Validation Test Suite
+      inputs:
+        script: 'newman run automatedtesting/postman/Data_validation_postman_collection.json -e $(System.DefaultWorkingDirectory)/automatedtesting/postman/postman_environment.json --reporters cli,junit --reporter-junit-export TestResults/result-data-validation-test.xml'
+        workingDirectory: '$(System.DefaultWorkingDirectory)'
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/*.xml'
+
+# - stage:
+#   jobs:
+#   - deployment: FakeRestAPI
+#     pool:
+#       vmImage: 'ubuntu-latest'
+#     environment: 'TEST'
+#     strategy:
+#       runOnce:
+#         deploy:
+#           steps:
+#           - task: AzureWebApp@1
+#             displayName: 'Deploy Azure Web App'
+#             inputs:
+#               azureSubscription: 'quality_release'
+#               appName: 'bambamapp-AppService'
+#               appType: webApp
+#               package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip
+#   # - deployment: VMDeploy
+#   #   displayName: NAME
+#   #   environment:
+#   #     name:  ENVIRONMENT NAME
+#   #     resourceType: VirtualMachine
+#   #     tags: TAG NAME
+#   #   strategy:
+#   #     runOnce:
+#   #       deploy:
+#   #         steps:
+#   #         - task: Bash@3
+#   #           inputs:
+#   #             targetType: 'inline'
+#   #             script: |
+#   #               #! /bin/bash
                 
-  #               sudo apt-get upgrade -y
-  #               sudo apt-get install python3-pip -y
-  #               sudo apt-get install unzip -y
-  #               sudo apt-get install -y chromium-browser
-  #               pip3 install selenium
-  #               export PATH=$PATH:some/path
+#   #               sudo apt-get upgrade -y
+#   #               sudo apt-get install python3-pip -y
+#   #               sudo apt-get install unzip -y
+#   #               sudo apt-get install -y chromium-browser
+#   #               pip3 install selenium
+#   #               export PATH=$PATH:some/path
 
 
