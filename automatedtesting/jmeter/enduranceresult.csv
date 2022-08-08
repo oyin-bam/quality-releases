@@ -1,0 +1,9 @@
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
+1659956273574,1307,GET All Activities,200,OK,Endurance Test 1-1,text,true,,3109,212,2,2,https://bambamapp-appservice.azurewebsites.net/api/Activities,1307,0,1073
+1659956274067,900,GET All Activities,200,OK,Endurance Test 1-2,text,true,,3109,212,2,2,https://bambamapp-appservice.azurewebsites.net/api/Activities,900,0,668
+1659956274882,218,Create new Activity,200,OK,Endurance Test 1-1,text,true,,262,320,2,2,https://bambamapp-appservice.azurewebsites.net/api/Activities,218,0,0
+1659956274967,211,Create new Activity,200,OK,Endurance Test 1-2,text,true,,262,320,2,2,https://bambamapp-appservice.azurewebsites.net/api/Activities,211,0,0
+1659956275101,212,Update Activity,200,OK,Endurance Test 1-1,text,true,,262,233,2,2,https://bambamapp-appservice.azurewebsites.net/api/Activities/1,212,0,0
+1659956275180,212,Update Activity,200,OK,Endurance Test 1-2,text,true,,262,233,2,2,https://bambamapp-appservice.azurewebsites.net/api/Activities/2,212,0,0
+1659956275313,215,Delete Activity,200,OK,Endurance Test 1-1,,true,,211,236,2,2,https://bambamapp-appservice.azurewebsites.net/api/Activities/1,215,0,0
+1659956275393,220,Delete Activity,200,OK,Endurance Test 1-2,,true,,211,236,1,1,https://bambamapp-appservice.azurewebsites.net/api/Activities/2,220,0,0
