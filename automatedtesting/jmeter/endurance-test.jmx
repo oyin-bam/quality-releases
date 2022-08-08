@@ -131,14 +131,14 @@
           <collectionProp name="Arguments.arguments">
             <elementProp name="base_url" elementType="Argument">
               <stringProp name="Argument.name">base_url</stringProp>
-              <stringProp name="Argument.value">maryamapp-appservice.azurewebsites.net</stringProp>
+              <stringProp name="Argument.value">bambamapp-appservice.azurewebsites.net</stringProp>
               <stringProp name="Argument.metadata">=</stringProp>
             </elementProp>
           </collectionProp>
         </Arguments>
         <hashTree/>
         <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
-          <stringProp name="filename">/home/owolabi/Documents/Work/Access Bank/quality_release/automatedtesting/jmeter/data.csv</stringProp>
+          <stringProp name="filename">C:/Users/USER/Desktop/quality releases project/Project Starter Resources/automatedtesting/jmeter/data.csv</stringProp>
           <stringProp name="fileEncoding"></stringProp>
           <stringProp name="variableNames">id,title,due_date,completed</stringProp>
           <boolProp name="ignoreFirstLine">false</boolProp>
@@ -220,7 +220,7 @@
               <connectTime>true</connectTime>
             </value>
           </objProp>
-          <stringProp name="filename">Project Starter Resources\automatedtesting\jmeter\endurance-test.jmx</stringProp>
+          <stringProp name="filename">C:\Users\USER\Desktop\quality releases project\Project Starter Resources\automatedtesting\jmeter\enduranceresult.csv</stringProp>
         </ResultCollector>
         <hashTree/>
       </hashTree>
