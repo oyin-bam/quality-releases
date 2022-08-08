@@ -46,31 +46,8 @@ stages:
           command: 'apply'
           environmentServiceNameAzureRM: 'Azure subscription 1(0b996307-7c6a-462a-990b-568412d43da3)'
     
-- stage: Build
-  jobs:
-  - job: Build
-    pool:
-      name: 'Azure Pipelines'
-    steps:
-    # Needed for Terraform VM deployment
-    # - task: InstallSSHKey@0
-    #   inputs:
-    #     knownHostsEntry: 'KNOWN_HOSTS_STRING'
-    #     sshPublicKey: 'PUBLIC_KEY'
-    #     sshKeySecureFile: 'id_rsa'
-    - task: ArchiveFiles@2
-      displayName: 'Archive FakeRestAPI'
-      inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/fakerestapi'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
-    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip
-      displayName: 'Upload Package'
-      artifact: drop-fakerestapi
 
-
-- stage: Build1
+- stage: BuildSelenium
   jobs:
   - job: Build
     pool:
@@ -156,7 +133,7 @@ stages:
           - task: AzureWebApp@1
             displayName: 'Deploy Azure Web App'
             inputs:
-              azureSubscription: 'connect'
+              azureSubscription: 'Azure subscription 1(0b996307-7c6a-462a-990b-568412d43da3)'
               appName: 'timsapp-AppService'
               appType: webApp
               package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip
@@ -215,6 +192,30 @@ stages:
       inputs:
         testResultsFormat: 'JUnit'
         testResultsFiles: '**/*.xml'
+
+
+# - stage: Build
+#   jobs:
+#   - job: Build
+#     pool:
+#       name: 'Azure Pipelines'
+#     steps:
+#     # Needed for Terraform VM deployment
+#     # - task: InstallSSHKey@0
+#     #   inputs:
+#     #     knownHostsEntry: 'KNOWN_HOSTS_STRING'
+#     #     sshPublicKey: 'PUBLIC_KEY'
+#     #     sshKeySecureFile: 'id_rsa'
+#     - task: ArchiveFiles@2
+#       displayName: 'Archive FakeRestAPI'
+#       inputs:
+#         rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/fakerestapi'
+#         includeRootFolder: false
+#         archiveType: 'zip'
+#         archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
+#     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip
+#       displayName: 'Upload Package'
+#       artifact: drop-fakerestapi
 
 # - stage:
 #   jobs:
