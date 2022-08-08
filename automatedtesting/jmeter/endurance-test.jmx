@@ -22,7 +22,11 @@
         <stringProp name="ThreadGroup.ramp_time">1</stringProp>
         <boolProp name="ThreadGroup.scheduler">true</boolProp>
         <stringProp name="ThreadGroup.duration">2</stringProp>
+<<<<<<< HEAD
         <stringProp name="ThreadGroup.delay">3</stringProp>
+=======
+        <stringProp name="ThreadGroup.delay"></stringProp>
+>>>>>>> c84bdf78225cd3397b8211db137f882ee41dd50b
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
       </ThreadGroup>
       <hashTree>
