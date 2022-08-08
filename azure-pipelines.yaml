@@ -6,7 +6,7 @@ stages:
   jobs:
   - job: Build
     pool:
-      name: 'ubuntu-18.04'
+      name: 'ubuntu-latest'
     steps:
     # Needed for Terraform VM deployment
     # - task: InstallSSHKey@0
@@ -28,7 +28,7 @@ stages:
   jobs:
   - deployment: FakeRestAPI
     pool:
-      vmImage: 'ubuntu-18.04'
+      vmImage: 'ubuntu-latest'
     environment: 'TEST'
     strategy:
       runOnce:
