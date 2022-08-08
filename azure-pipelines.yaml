@@ -145,7 +145,7 @@ stages:
             displayName: 'Deploy Azure Web App'
             inputs:
               azureSubscription: 'Azure subscription 1(0b996307-7c6a-462a-990b-568412d43da3)'
-              appName: 'timsapp-AppService'
+              appName: 'bambamapp-AppService'
               appType: webApp
               package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip
 
