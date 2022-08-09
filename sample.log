@@ -1,19 +1,19 @@
 selenium
-2022-08-09 01:20:15 INFO     Login successfully. Navigating to the demo page to products
-2022-08-09 01:20:15 INFO     Adding product Sauce Labs Backpack
-2022-08-09 01:20:15 INFO     Adding product Sauce Labs Bike Light
-2022-08-09 01:20:15 INFO     Adding product Sauce Labs Bolt T-Shirt
-2022-08-09 01:20:15 INFO     Adding product Sauce Labs Fleece Jacket
-2022-08-09 01:20:15 INFO     Adding product Sauce Labs Onesie
-2022-08-09 01:20:15 INFO     Adding product Test.allTheThings() T-Shirt (Red)
-2022-08-09 01:20:15 INFO     Successfully added all products
-2022-08-09 01:20:15 INFO     Removing product Sauce Labs Backpack
-2022-08-09 01:20:15 INFO     Removing product Sauce Labs Bike Light
-2022-08-09 01:20:15 INFO     Removing product Sauce Labs Bolt T-Shirt
-2022-08-09 01:20:15 INFO     Removing product Sauce Labs Fleece Jacket
-2022-08-09 01:20:15 INFO     Removing product Sauce Labs Onesie
-2022-08-09 01:20:15 INFO     Removing product Test.allTheThings() T-Shirt (Red)
-2022-08-09 01:20:15 INFO     Successfully removed all products
+2022-08-09 01:20:15,INFO,Login successfully. Navigating to the demo page to products
+2022-08-09 01:20:15,INFO,Adding product Sauce Labs Backpack
+2022-08-09 01:20:15,INFO,Adding product Sauce Labs Bike Light
+2022-08-09 01:20:15,INFO,Adding product Sauce Labs Bolt T-Shirt
+2022-08-09 01:20:15,INFO,Adding product Sauce Labs Fleece Jacket
+2022-08-09 01:20:15,INFO,Adding product Sauce Labs Onesie
+2022-08-09 01:20:15,INFO,Adding product Test.allTheThings() T-Shirt (Red)
+2022-08-09 01:20:15,INFO,Successfully added all products
+2022-08-09 01:20:15,INFO,Removing product Sauce Labs Backpack
+2022-08-09 01:20:15,INFO,Removing product Sauce Labs Bike Light
+2022-08-09 01:20:15,INFO,Removing product Sauce Labs Bolt T-Shirt
+2022-08-09 01:20:15,INFO,Removing product Sauce Labs Fleece Jacket
+2022-08-09 01:20:15,INFO,Removing product Sauce Labs Onesie
+2022-08-09 01:20:15,INFO,Removing product Test.allTheThings() T-Shirt (Red)
+2022-08-09 01:20:15,INFO,Successfully removed all products
 Starting the browser...
 Browser started successfully. Navigating to the demo page to login.
 Trying to login a user standard_user
