@@ -5,10 +5,10 @@ from selenium.webdriver.common.by import By
 import logging
 
 print('Starting the browser...')
-# options = ChromeOptions()
-# options.add_argument("--headless")
-# driver = webdriver.Chrome(options=options)
-driver = webdriver.Chrome()
+options = ChromeOptions()
+options.add_argument("--headless")
+driver = webdriver.Chrome(options=options)
+# driver = webdriver.Chrome()
 logging.basicConfig(
     format='%(asctime)s %(levelname)-8s %(message)s',
     level=logging.INFO,
