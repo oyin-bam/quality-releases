@@ -10,6 +10,7 @@ options.add_argument("--headless")
 driver = webdriver.Chrome(options=options)
 # driver = webdriver.Chrome()
 logging.basicConfig(
+    filename="/var/log/app/app.log",
     format='%(asctime)s %(levelname)-8s %(message)s',
     level=logging.INFO,
     datefmt='%Y-%m-%d %H:%M:%S')
